@@ -1,0 +1,47 @@
+import numpy as np
+class NN:
+    def __init__(self):
+        self.input_size = 2
+        self.output_size = 1
+
+        # Initialize weights
+        
+        self.w = np.random.randn(self.input_size, self.output_size)
+        self.bias = np.zeros((1, self.output_size))
+
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-x))
+
+    def sigmoid_derivative(self, x):
+        return x * (1 - x)
+
+    def feedforward(self, X):
+        # Input to hidden
+        self.z = np.dot(x, self.w) + self.bias
+        self.yHat = self.sigmoid(self.z)
+
+        return self.yHat
+
+    def backward(self, X, y, learning_rate):
+        # Compute the output layer error
+        output_error = y - self.yHat
+        output_delta = output_error * self.sigmoid_derivative(self.yHat)
+
+        self.bias += np.sum(output_delta, axis=0, keepdims=True) * learning_rate
+        self.w += np.dot(X.T, output_delta) * learning_rate
+
+    def train(self, X, y, epochs, learning_rate):
+        for epoch in range(epochs):
+            output = self.feedforward(X)
+            self.backward(X, y, learning_rate)
+            if epoch % 4000 == 0:
+                loss = np.mean(np.square(y - output))
+                print(f"Epoch {epoch}, Loss:{loss}")
+
+Neural =NN()
+x=np.array([[1,1],[0,0],[1,0],[0,1]])
+y=np.array([[0],[0],[1],[1]])
+Neural.train(x,y,10000,0.1)
+yH=Neural.feedforward(x)
+print(yH)
+y
